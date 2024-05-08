@@ -16,11 +16,11 @@ import java.io.Serializable;
 
 public class Doctor implements Serializable {
     @Id
-    @Column(name="DoctorId")
+    @Column(name="doctor_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long doctorId;
-    @Column(name="Nombre")
+    @Column(name="nombre")
     private String nombre;
-    @Column(name="Disponible")
+    @Column(name="disponible")
     private int disponible;
 }
