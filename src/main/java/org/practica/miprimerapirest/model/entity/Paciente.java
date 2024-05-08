@@ -17,23 +17,23 @@ import java.util.Date;
 
 public class Paciente implements Serializable {
     @Id
-    @Column(name="PacienteId")
+    @Column(name="paciente_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long pacienteId;
 
-    @Column(name="Nombre")
+    @Column(name="nombre")
     private String nombre;
 
-    @Column(name="Edad")
+    @Column(name="edad")
     private int edad;
 
-    @Column(name="TipoSangre")
+    @Column(name="tipo_sangre")
     private String tipoSangre;
 
-    @Column(name="UltimaCita")
+    @Column(name="ultima_cita")
     private Date ultimaCita;
 
     @ManyToOne
-    @JoinColumn(name="DoctorId")
+    @JoinColumn(name="doctor_id")
     private Doctor doctor;
 }
