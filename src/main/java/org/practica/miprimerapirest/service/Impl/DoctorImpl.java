@@ -1,5 +1,6 @@
 package org.practica.miprimerapirest.service.Impl;
 
+import org.practica.miprimerapirest.model.dto.DoctorDto;
 import org.practica.miprimerapirest.model.entity.Doctor;
 import org.practica.miprimerapirest.service.IDoctor;
 import org.practica.miprimerapirest.model.dao.DoctorDao;
@@ -19,7 +20,12 @@ public class DoctorImpl implements IDoctor {
 
     @Transactional
     @Override
-    public Doctor save(Doctor doctor) {
+    public Doctor save(DoctorDto doctorDto) {
+        Doctor doctor = Doctor.builder()
+                .doctorId(doctorDto.getDoctorId())
+                .nombre(doctorDto.getNombre())
+                .disponible(doctorDto.getDisponible())
+                .build();
         return doctorDao.save(doctor);
     }
 

@@ -1,6 +1,7 @@
 package org.practica.miprimerapirest.service.Impl;
 
 import org.practica.miprimerapirest.model.dao.PacienteDao;
+import org.practica.miprimerapirest.model.dto.PacienteDto;
 import org.practica.miprimerapirest.model.entity.Paciente;
 import org.practica.miprimerapirest.service.IPaciente;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +20,15 @@ public class PacienteImpl implements IPaciente {
 
     @Transactional
     @Override
-    public Paciente save(Paciente paciente) {
+    public Paciente save(PacienteDto pacienteDto) {
+        Paciente paciente = Paciente.builder()
+                .pacienteId(pacienteDto.getPacienteId())
+                .nombre(pacienteDto.getNombre())
+                .edad(pacienteDto.getEdad())
+                .tipoSangre(pacienteDto.getTipoSangre())
+                .ultimaCita(pacienteDto.getUltimaCita())
+                .doctor(pacienteDto.getDoctor())
+                .build();
         return pacienteDao.save(paciente);
     }
 
