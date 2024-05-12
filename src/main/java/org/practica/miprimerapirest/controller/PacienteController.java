@@ -2,9 +2,12 @@ package org.practica.miprimerapirest.controller;
 
 import org.practica.miprimerapirest.model.dto.PacienteDto;
 import org.practica.miprimerapirest.model.entity.Paciente;
+import org.practica.miprimerapirest.model.payload.MensajeReponse;
 import org.practica.miprimerapirest.service.IPaciente;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -47,9 +50,17 @@ public class PacienteController {
 
     @DeleteMapping("paciente/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id){
-        Paciente pacienteDelete = pacienteServicio.findById(id);
-        pacienteServicio.delete(pacienteDelete);
+    public ResponseEntity<?> delete(@PathVariable Long id){
+        try {
+            Paciente pacienteDelete = pacienteServicio.findById(id);
+            pacienteServicio.delete(pacienteDelete);
+            return new ResponseEntity<>(pacienteDelete, HttpStatus.NO_CONTENT);
+        }catch (DataAccessException exDt){
+            return new ResponseEntity<>(MensajeReponse.builder()
+                    .mensaje(exDt.getMessage())
+                    .objeto(null)
+                    .build(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("paciente/{id}")
