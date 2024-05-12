@@ -7,6 +7,9 @@ import org.practica.miprimerapirest.service.IPaciente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class PacienteImpl implements IPaciente {
@@ -36,6 +39,13 @@ public class PacienteImpl implements IPaciente {
     @Override
     public Paciente findById(Long Id) {
         return pacienteDao.findById(Id).orElse(null);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Paciente> findAll() {
+        return StreamSupport.stream(pacienteDao.findAll().spliterator(), false)
+                .collect(Collectors.toList());
     }
 
     @Transactional

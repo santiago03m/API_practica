@@ -8,54 +8,54 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@RestController
-@RequestMapping("/api/v1")
+@Controller
 public class PacienteController {
     private final IPaciente pacienteServicio;
 
     @Autowired
-    public PacienteController(IPaciente pacienteServicio){
+    public PacienteController(IPaciente pacienteServicio) {
         this.pacienteServicio = pacienteServicio;
+    }
+
+    private PacienteDto convertToDto(Paciente paciente) {
+        return PacienteDto.builder()
+                .pacienteId(paciente.getPacienteId())
+                .nombre(paciente.getNombre())
+                .edad(paciente.getEdad())
+                .tipoSangre(paciente.getTipoSangre())
+                .ultimaCita(paciente.getUltimaCita())
+                .doctor(paciente.getDoctor())
+                .build();
     }
 
     @PostMapping("paciente")
     @ResponseStatus(HttpStatus.CREATED)
-    public PacienteDto create(@RequestBody PacienteDto pacienteDto){
+    public PacienteDto create(@RequestBody PacienteDto pacienteDto) {
         Paciente pacienteSave = pacienteServicio.save(pacienteDto);
-        return PacienteDto.builder()
-                .pacienteId(pacienteSave.getPacienteId())
-                .nombre(pacienteSave.getNombre())
-                .edad(pacienteSave.getEdad())
-                .tipoSangre(pacienteSave.getTipoSangre())
-                .ultimaCita(pacienteSave.getUltimaCita())
-                .doctor(pacienteSave.getDoctor())
-                .build();
+        return convertToDto(pacienteSave);
     }
 
     @PutMapping("paciente")
     @ResponseStatus(HttpStatus.CREATED)
-    public PacienteDto update(@RequestBody PacienteDto pacienteDto){
+    public PacienteDto update(@RequestBody PacienteDto pacienteDto) {
         Paciente pacienteUpdate = pacienteServicio.save(pacienteDto);
-        return PacienteDto.builder()
-                .pacienteId(pacienteUpdate.getPacienteId())
-                .nombre(pacienteUpdate.getNombre())
-                .edad(pacienteUpdate.getEdad())
-                .tipoSangre(pacienteUpdate.getTipoSangre())
-                .ultimaCita(pacienteUpdate.getUltimaCita())
-                .doctor(pacienteUpdate.getDoctor())
-                .build();
+        return convertToDto(pacienteUpdate);
     }
 
     @DeleteMapping("paciente/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public ResponseEntity<?> delete(@PathVariable Long id){
+    public ResponseEntity<?> delete(@PathVariable Long id) {
         try {
             Paciente pacienteDelete = pacienteServicio.findById(id);
             pacienteServicio.delete(pacienteDelete);
             return new ResponseEntity<>(pacienteDelete, HttpStatus.NO_CONTENT);
-        }catch (DataAccessException exDt){
+        } catch (DataAccessException exDt) {
             return new ResponseEntity<>(MensajeReponse.builder()
                     .mensaje(exDt.getMessage())
                     .objeto(null)
@@ -65,15 +65,26 @@ public class PacienteController {
 
     @GetMapping("paciente/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public PacienteDto showById(@PathVariable Long id){
+    public PacienteDto showById(@PathVariable Long id) {
         Paciente paciente = pacienteServicio.findById(id);
-        return PacienteDto.builder()
-                .pacienteId(paciente.getPacienteId())
-                .nombre(paciente.getNombre())
-                .edad(paciente.getEdad())
-                .tipoSangre(paciente.getTipoSangre())
-                .ultimaCita(paciente.getUltimaCita())
-                .doctor(paciente.getDoctor())
-                .build();
+        return convertToDto(paciente);
+    }
+
+    @GetMapping("/pacientes")
+    public String findAll(Model modelo) {
+        try {
+            List<Paciente> pacientes = pacienteServicio.findAll();
+            List<PacienteDto> pacientesDto = pacientes.stream()
+                    .map(this::convertToDto)
+                    .collect(Collectors.toList());
+            modelo.addAttribute("pacientes", pacientesDto);
+            return "pacientes";
+        } catch (DataAccessException exDt) {
+            modelo.addAttribute(MensajeReponse.builder()
+                    .mensaje(exDt.getMessage())
+                    .objeto(null)
+                    .build());
+            return "pacientes";
+        }
     }
 }

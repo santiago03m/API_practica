@@ -10,6 +10,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RestController
 @RequestMapping("/api/v1")
 public class DoctorController {
@@ -20,26 +23,25 @@ public class DoctorController {
         this.doctorService = doctorService;
     }
 
+    private DoctorDto convertToDto(Doctor doctor) {
+        return DoctorDto.builder().doctorId(doctor.getDoctorId())
+                .nombre(doctor.getNombre())
+                .disponible(doctor.getDisponible())
+                .build();
+    }
+
     @PostMapping("doctor")
     @ResponseStatus(HttpStatus.CREATED)
     public DoctorDto create(@RequestBody DoctorDto doctorDto) {
         Doctor doctorSave = doctorService.save(doctorDto);
-        return DoctorDto.builder()
-                .doctorId(doctorSave.getDoctorId())
-                .nombre(doctorSave.getNombre())
-                .disponible(doctorSave.getDisponible())
-                .build();
+        return convertToDto(doctorSave);
     }
 
     @PutMapping("doctor")
     @ResponseStatus(HttpStatus.CREATED)
     public DoctorDto update(@RequestBody DoctorDto doctorDto) {
         Doctor doctorUpdate = doctorService.save(doctorDto);
-        return DoctorDto.builder()
-                .doctorId(doctorUpdate.getDoctorId())
-                .nombre(doctorUpdate.getNombre())
-                .disponible(doctorUpdate.getDisponible())
-                .build();
+        return convertToDto(doctorUpdate);
     }
 
     @DeleteMapping("doctor/{id}")
@@ -61,10 +63,22 @@ public class DoctorController {
     @ResponseStatus(HttpStatus.OK)
     public DoctorDto showById(@PathVariable Long id) {
         Doctor doctor = doctorService.findById(id);
-        return DoctorDto.builder()
-                .doctorId(doctor.getDoctorId())
-                .nombre(doctor.getNombre())
-                .disponible(doctor.getDisponible())
-                .build();
+        return convertToDto(doctor);
+    }
+
+    @GetMapping("doctores")
+    public ResponseEntity<?> findAll() {
+        try {
+            List<Doctor> doctores = doctorService.findAll();
+            List<DoctorDto> doctoresDto = doctores.stream()
+                    .map(this::convertToDto)
+                    .collect(Collectors.toList());
+            return new ResponseEntity<>(doctoresDto, HttpStatus.OK);
+        } catch (DataAccessException exDt) {
+            return new ResponseEntity<>(MensajeReponse.builder()
+                    .mensaje(exDt.getMessage())
+                    .objeto(null)
+                    .build(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
