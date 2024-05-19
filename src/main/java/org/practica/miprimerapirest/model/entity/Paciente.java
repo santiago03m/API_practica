@@ -2,6 +2,7 @@ package org.practica.miprimerapirest.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -30,6 +31,7 @@ public class Paciente implements Serializable {
     private String tipoSangre;
 
     @Column(name="ultima_cita")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date ultimaCita;
 
     @ManyToOne

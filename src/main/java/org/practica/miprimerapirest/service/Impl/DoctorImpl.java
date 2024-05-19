@@ -1,6 +1,5 @@
 package org.practica.miprimerapirest.service.Impl;
 
-import org.practica.miprimerapirest.model.dao.PacienteDao;
 import org.practica.miprimerapirest.model.dto.DoctorDto;
 import org.practica.miprimerapirest.model.entity.Doctor;
 import org.practica.miprimerapirest.service.IDoctor;
