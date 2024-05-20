@@ -3,12 +3,10 @@ package org.practica.miprimerapirest.controller;
 import org.practica.miprimerapirest.model.dto.PacienteDto;
 import org.practica.miprimerapirest.model.entity.Doctor;
 import org.practica.miprimerapirest.model.entity.Paciente;
-import org.practica.miprimerapirest.model.payload.MensajeReponse;
 import org.practica.miprimerapirest.service.IDoctor;
 import org.practica.miprimerapirest.service.IPaciente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -41,7 +39,7 @@ public class PacienteController {
     }
 
     @GetMapping
-    public String findAll(Model modelo) {
+    public String listaPacientes(Model modelo) {
         try {
             List<Paciente> pacientes = pacienteServicio.findAll();
             List<PacienteDto> pacientesDto = pacientes.stream()
@@ -73,7 +71,7 @@ public class PacienteController {
     public String formularioEditarPaciente(@PathVariable Long id, Model modelo) {
         Paciente paciente = pacienteServicio.findById(id);
         if (paciente != null) {
-            modelo.addAttribute("pacienteNuevo", convertToDto(paciente));
+            modelo.addAttribute("pacienteExistente", convertToDto(paciente));
             List<Doctor> doctores = doctorServicio.findAll();
             modelo.addAttribute("doctores", doctores);
             return "edit_paciente";
@@ -83,7 +81,7 @@ public class PacienteController {
     }
 
     @PostMapping("/update/{id}")
-    public String update(@PathVariable Long id, @ModelAttribute("pacienteNuevo") PacienteDto pacienteDto) {
+    public String update(@PathVariable Long id, @ModelAttribute("pacienteExistente") PacienteDto pacienteDto) {
         pacienteDto.setPacienteId(id);
         pacienteServicio.save(pacienteDto);
         return "redirect:/pacientes";

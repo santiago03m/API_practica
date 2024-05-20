@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <meta charset="UTF-8">
+    <title>Crear Doctor</title>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1 class="text-center">Crear Doctor</h1>
+            <form method="POST" th:action="@{/doctores}" th:object="${doctorNuevo}">
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre:</label>
+                    <input id="nombre" required th:field="*{nombre}" type="text" class="form-control"/>
+                </div>
+                <div class="mb-3">
+                    <label for="disponible" class="form-label">Disponible (1 para sí, 0 para no):</label>
+                    <input id="disponible" th:field="*{disponible}" type="number" min="0" max="1" class="form-control"/>
+                </div>
+                <div class="mb-3 d-grid">
+                    <button type="submit" class="btn btn-success">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>

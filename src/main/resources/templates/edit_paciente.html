@@ -8,7 +8,7 @@
 <body>
 <div class="container">
     <h1>Editar Paciente</h1>
-    <form method="POST" th:action="@{/pacientes/update/{id}(id=${pacienteNuevo.pacienteId})}" th:object="${pacienteNuevo}">
+    <form method="POST" th:action="@{/pacientes/update/{id}(id=${pacienteExistente.pacienteId})}" th:object="${pacienteExistente}">
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre:</label>
             <input id="nombre" required th:field="*{nombre}" type="text" class="form-control"/>
